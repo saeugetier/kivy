@@ -116,7 +116,10 @@ class CameraOpenCV(CameraBase):
             # http://stackoverflow.com/questions/32468371/video-capture-propid-parameters-in-opencv # noqa
             self._resolution = (int(frame.shape[1]), int(frame.shape[0]))
             # get fps
-            self.fps = self._device.get(PROPERTY_FPS)
+            if self.opencvMajorVersion == 2:
+                self.fps = self._device.get(PROPERTY_FPS)
+            else:
+                self.fps = 1/self._device.get(PROPERTY_FPS)
 
         if self.fps <= 0:
             self.fps = 1 / 30.
