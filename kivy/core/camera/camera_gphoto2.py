@@ -1,3 +1,4 @@
+import os
 from kivy.core.camera import CameraBase
 import gphoto2 as gp
 import threading
@@ -14,11 +15,11 @@ class CameraGPhoto2(CameraBase):
     Implementation of CameraBase using GPhoto2
     '''
     class CameraThread(threading.Thread):
-        stop = threading.Event()
 
         def __init__(self, capture_device, queue):
             self._capture_device = capture_device
             self._queue = queue
+            self.stop = threading.Event()
             super(CameraGPhoto2.CameraThread, self).__init__()
 
 
@@ -44,6 +45,8 @@ class CameraGPhoto2(CameraBase):
 
 
     def __del__(self):
+        print("Camera shutdown")
+        self.stop()
         if self.capture_device is not None:
             gp.check_result(gp.gp_camera_exit(self.capture_device))
 
@@ -96,6 +99,7 @@ class CameraGPhoto2(CameraBase):
                 size = image.size
                 print("Image Size is {}".format(size))
                 self._texture = Texture.create(size)
+                self._texture.flip_vertical()
                 print(self._texture)
                 self.dispatch('on_load')
             try:
@@ -123,7 +127,26 @@ class CameraGPhoto2(CameraBase):
             self._update_ev = None
         if self._thread is not None:
             self._thread.stop.set()
+            self._thread.join()
+            self._thread = None
         super(CameraGPhoto2, self).stop()
+
+    def takePhoto(self, folder):
+        if self._thread is not None:
+            started = True
+        else:
+            started = False
+        if started:
+            self.stop()
+        file_path = gp.check_result(gp.gp_camera_capture(
+            self.capture_device, gp.GP_CAPTURE_IMAGE))
+        target = os.path.join(folder, file_path.name)
+        camera_file = gp.check_result(gp.gp_camera_file_get(
+            self.capture_device, file_path.folder, file_path.name, gp.GP_FILE_TYPE_NORMAL))
+        gp.check_result(gp.gp_file_save(camera_file, target))
+        if started:
+            self.start()
+        return target
 
 
 

@@ -142,7 +142,7 @@ if platform == 'macosx':
 elif platform == 'android':
     providers += (('android', 'camera_android', 'CameraAndroid'), )
 
-providers += (('opencv', 'camera_opencv', 'CameraOpenCV'), ('gphoto2', 'camera_gphoto2', 'CameraGPhoto2'))
+providers += (('gphoto2', 'camera_gphoto2', 'CameraGPhoto2'), ('opencv', 'camera_opencv', 'CameraOpenCV'), )
 
 
 Camera = core_select_lib('camera', (providers))
