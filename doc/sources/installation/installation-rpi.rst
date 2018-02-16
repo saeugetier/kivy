@@ -7,8 +7,8 @@ You can install Kivy manually, or you can download and boot KivyPie on the
 Raspberry Pi. Both options are described below.
 
 
-Manual installation (On Raspbian Jessie)
-----------------------------------------
+Manual installation (On Raspbian Jessie/Stretch)
+------------------------------------------------
 
 #. Install the dependencies::
 
@@ -18,7 +18,7 @@ Manual installation (On Raspbian Jessie)
        python-setuptools libgstreamer1.0-dev git-core \
        gstreamer1.0-plugins-{bad,base,good,ugly} \
        gstreamer1.0-{omx,alsa} python-dev libmtdev-dev \
-       xclip
+       xclip xsel
 
 #. Install a new enough version of Cython:
 
@@ -41,6 +41,12 @@ Manual installation (On Raspbian Jessie)
     echo "export PYTHONPATH=$(pwd):\$PYTHONPATH" >> ~/.profile
     source ~/.profile
 
+.. note::
+
+    On versions of kivy prior to 1.10.1, Mesa library naming changes can result
+    in "Unable to find any valuable Window provider" errors. If you experience
+    this issue, please upgrade or consult `ticket #5360.
+    <https://github.com/kivy/kivy/issues/5360>`_
 
 Manual installation (On Raspbian Wheezy)
 ----------------------------------------
