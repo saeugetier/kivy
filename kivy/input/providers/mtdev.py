@@ -45,7 +45,7 @@ from kivy.input.motionevent import MotionEvent
 from kivy.input.shape import ShapeRect
 
 
-class MTDMotionEvent(MotionEvent):
+    class MTDMotionEvent(MotionEvent):
 
     def depack(self, args):
         self.is_touch = True

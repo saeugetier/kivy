@@ -52,6 +52,11 @@ if platform == 'linux' or 'KIVY_DOC' in os.environ:
     except:
         err = 'Input: LinuxWacom is not supported by your version of linux'
         Logger.exception(err)
+    try:
+        import kivy.input.providers.nunchuck
+    except:
+        err = 'Input: Nunchuck is not supported by your version of linux'
+        Logger.exception(err)
 
 if (platform == 'android' and not USE_SDL2) or 'KIVY_DOC' in os.environ:
     try:

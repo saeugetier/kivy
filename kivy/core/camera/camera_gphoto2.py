@@ -32,6 +32,7 @@ class CameraGPhoto2(CameraBase):
                     self._queue.put(io.BytesIO(file_data))
                 else:
                     time.sleep(0.05)
+            print("thread ended")
 
 
     _update_ev = None
@@ -122,13 +123,18 @@ class CameraGPhoto2(CameraBase):
 
 
     def stop(self):
+        print("stop")
         if self._update_ev is not None:
+
             self._update_ev.cancel()
             self._update_ev = None
         if self._thread is not None:
             self._thread.stop.set()
             self._thread.join()
+            print("joined")
             self._thread = None
+        if self.capture.empty() is False:
+            self.capture.get()
         super(CameraGPhoto2, self).stop()
 
     def takePhoto(self, folder):
@@ -136,10 +142,11 @@ class CameraGPhoto2(CameraBase):
             started = True
         else:
             started = False
-        if started:
+        if started is True:
             self.stop()
-        file_path = gp.check_result(gp.gp_camera_capture(
-            self.capture_device, gp.GP_CAPTURE_IMAGE))
+
+        print("capture image")
+        file_path = gp.check_result(gp.gp_camera_capture(self.capture_device, gp.GP_CAPTURE_IMAGE))
         target = os.path.join(folder, file_path.name)
         camera_file = gp.check_result(gp.gp_camera_file_get(
             self.capture_device, file_path.folder, file_path.name, gp.GP_FILE_TYPE_NORMAL))
